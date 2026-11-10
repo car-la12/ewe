@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ÉWÉ · Plateforme</title>
+<style>
+:root{--dg:#1f4a24;--lime:#bee550;--mint:#ecf6e4;--c1:#d6ecb0;--c2:#92ce3e;--c3:#f6b222;--c4:#ce3e28;--bg:#eef4e6;--card:#fff;--muted:#4f6b52}
+*{box-sizing:border-box}
+body{margin:0;background:#d9e5cc;color:var(--dg);font:16px/1.45 system-ui,Arial,sans-serif;padding-bottom:env(safe-area-inset-bottom,0px)}
+header{background:var(--dg);color:#fff;padding:env(safe-area-inset-top,0px) 16px 12px}
+header b{font-size:24px;letter-spacing:.5px}
+header small{color:var(--lime);margin-left:10px}
+nav{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+nav button{background:none;border:1px solid #ffffff88;color:#fff;border-radius:99px;padding:7px 14px;font-weight:600;cursor:pointer}
+nav button.on{background:var(--lime);color:var(--dg);border-color:var(--lime)}
+main{max-width:980px;margin:0 auto;padding:16px}
+.phone{max-width:390px;margin:0 auto;background:#1b1b1b;border-radius:46px;padding:12px;box-shadow:0 10px 30px #0005}
+.screen{background:var(--bg);border-radius:34px;overflow:hidden;min-height:760px;display:flex;flex-direction:column}
+.status{display:flex;justify-content:space-between;padding:12px 22px 6px;font-size:13px;font-weight:700;background:var(--dg);color:#fff}
+.appbar{background:var(--dg);color:#fff;padding:4px 18px 14px;font-weight:700;font-size:18px}
+.appbar small{display:block;color:var(--lime);font-weight:500;font-size:12px}
+.body{padding:14px;flex:1}
+.card{background:var(--card);border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 1px 3px #0002}
+h2{margin:0 0 8px;font-size:19px}
+input,select{width:100%;padding:10px;border:1px solid #9ab89c;border-radius:10px;font:15px system-ui;margin:4px 0 10px;background:#fff;color:var(--dg)}
+button.go{width:100%;padding:13px;border:0;border-radius:12px;background:var(--dg);color:#fff;font:700 16px system-ui;cursor:pointer;margin-top:8px}
+button.go.alt{background:var(--lime);color:var(--dg)}
+button.sm{padding:8px 12px;border:0;border-radius:10px;background:var(--dg);color:#fff;font-weight:700;cursor:pointer}
+.muted{color:var(--muted);font-size:13px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:14px;background:var(--mint);border-radius:10px;padding:10px;margin:8px 0}
+.cam{position:relative;background:#000;border-radius:14px;overflow:hidden;aspect-ratio:3/4}
+.cam video,.cam img{width:100%;height:100%;object-fit:cover;display:block}
+.hide{display:none!important}
+table{width:100%;border-collapse:separate;border-spacing:4px;font-size:14px}
+th{font-weight:600;color:var(--muted);font-size:12px}
+td{text-align:center;font-weight:700;padding:8px 4px;border-radius:8px}
+td:first-child{text-align:left;background:none}
+.l1{background:var(--c1)}.l2{background:var(--c2)}.l3{background:var(--c3)}.l4{background:var(--c4);color:#fff}
+.item{display:flex;justify-content:space-between;gap:10px;align-items:center;border-bottom:1px solid #e3ead9;padding:10px 0;flex-wrap:wrap}
+.grid{display:grid;gap:14px}
+@media(min-width:800px){.grid{grid-template-columns:1fr 1fr}}
+@media(max-width:500px){
+  body{background:var(--bg)}
+  .phone{max-width:none;border-radius:0;padding:0;box-shadow:none}
+  .screen{border-radius:0;min-height:100vh}
+}
+</style>
+</head>
+<body>
+<header>
+  <b>ÉWÉ</b><small>Journée Verte 2026 · EPITECH Bénin</small>
+  <nav>
+    <button id="b1" class="on" onclick="tab(1)">Application agent</button>
+    <button id="b2" onclick="tab(2)">Surveillance ANAP</button>
+  </nav>
+</header>
+<main>
+  <section id="s1">
+    <div class="phone"><div class="screen">
+      <div class="status"><span id="clk"></span><span>●●● 4G</span></div>
+      <div class="appbar">Nouvelle observation<small>Photo, position, météo et saison envoyées à la plateforme</small></div>
+      <div class="body">
+        <div class="card">
+          <label class="muted">Identifiant agent</label>
+          <input id="agent" placeholder="ex. AG1" autocapitalize="characters" autocorrect="off">
+          <div class="kv">
+            <span>Position</span><span id="pos">en attente du GPS…</span>
+            <span>Saison</span><span id="sea">—</span>
+            <span>Météo</span><span id="met">—</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="cam">
+            <video id="vid" autoplay playsinline muted></video>
+            <img id="prev" class="hide" alt="Photo de la feuille">
+          </div>
+          <p id="camerr" class="muted"></p>
+          <button id="shot" class="go alt" onclick="snap()">Prendre la photo</button>
+          <button id="again" class="go hide" onclick="retake()">Reprendre</button>
+          <p class="muted" style="margin:10px 0 0">Ou choisir une photo existante :</p>
+          <input type="file" id="ph" accept="image/*" capture="environment" onchange="fromFile(this)">
+        </div>
+        <button class="go" onclick="send()">Envoyer à la plateforme</button>
+        <p id="res" class="muted" style="text-align:center"></p>
+      </div>
+    </div></div>
+  </section>
+  <section id="s2" class="hide">
+    <div class="card">
+      <h2>Accès superviseur</h2>
+      <input id="tok" type="password" placeholder="Jeton superviseur" autocapitalize="off" autocorrect="off" autocomplete="off">
+      <button class="sm" onclick="saveTok();load()">Se connecter et actualiser</button>
+      <p id="tokmsg" class="muted"></p>
+    </div>
+    <div class="grid">
+      <div class="card"><h2>Notifications</h2><div id="notes" class="muted">—</div></div>
+      <div class="card"><h2>Tableau saisonnier</h2><div id="matrix" class="muted">—</div></div>
+    </div>
+    <div class="card"><h2>Zones</h2><div id="zones" class="muted">—</div></div>
+    <div class="card"><h2>Alertes</h2><div id="alerts" class="muted">—</div></div>
+  </section>
+</main>
+<script>
+const $ = i => document.getElementById(i);
+const SEA = ["Grande pluie", "Petite sèche", "Petite pluie", "Grande sèche"];
+const seasonOf = d => { const m = d.getMonth() + 1; return m >= 4 && m <= 7 ? 0 : m <= 9 ? 1 : m <= 11 ? 2 : 3; };
+const lv = v => v == null ? 0 : v < 10 ? 1 : v < 20 ? 2 : v < 30 ? 3 : 4;
+
+// Horloge et saison
+function tick() { $('clk').textContent = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }); }
+tick(); setInterval(tick, 30000);
+$('sea').textContent = SEA[seasonOf(new Date())];
+
+// Identifiant agent et jeton (mémorisés sur l'appareil)
+$('agent').value = localStorage.getItem('agent') || '';
+$('agent').onchange = () => localStorage.setItem('agent', $('agent').value.trim());
+$('tok').value = sessionStorage.getItem('tok') || '';
+function saveTok() { sessionStorage.setItem('tok', $('tok').value.trim()); }
+
+// Position et météo automatiques
+let geo = null;
+async function weather() {
+  try {
+    const u = `https://api.open-meteo.com/v1/forecast?latitude=${geo.lat}&longitude=${geo.lon}` +
+              `&current=temperature_2m,relative_humidity_2m,precipitation`;
+    const c = (await (await fetch(u)).json()).current;
+    Object.assign(geo, { t: c.temperature_2m, h: c.relative_humidity_2m, r: c.precipitation });
+    $('met').textContent = `${geo.t} °C · ${geo.h} % d’humidité · ${geo.r} mm`;
+  } catch (e) { $('met').textContent = 'indisponible'; }
+}
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(p => {
+    geo = { lat: p.coords.latitude, lon: p.coords.longitude };
+    $('pos').textContent = geo.lat.toFixed(5) + ', ' + geo.lon.toFixed(5);
+    weather();
+    setInterval(weather, 10 * 60 * 1000);
+  }, () => { $('pos').textContent = 'GPS refusé'; }, { enableHighAccuracy: true, timeout: 15000 });
+} else { $('pos').textContent = 'GPS indisponible'; }
+
+// Caméra en direct
+let stream = null, photo = null;
+async function startCam() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    $('camerr').textContent = 'Caméra directe indisponible ici (HTTPS requis). Utilisez « Choisir une photo ».';
+    $('vid').classList.add('hide'); return;
+  }
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
+    $('vid').srcObject = stream;
+  } catch (e) {
+    $('camerr').textContent = 'Caméra refusée. Autorisez-la dans le navigateur, ou utilisez « Choisir une photo ».';
+    $('vid').classList.add('hide');
+  }
+}
+function snap() {
+  if (!stream) { $('ph').click(); return; }
+  const v = $('vid'), c = document.createElement('canvas');
+  c.width = v.videoWidth; c.height = v.videoHeight;
+  c.getContext('2d').drawImage(v, 0, 0);
+  c.toBlob(b => { photo = b; showPrev(URL.createObjectURL(b)); }, 'image/jpeg', 0.9);
+}
+function showPrev(url) {
+  $('prev').src = url; $('prev').classList.remove('hide');
+  $('vid').classList.add('hide'); $('shot').classList.add('hide'); $('again').classList.remove('hide');
+}
+function retake() {
+  photo = null; $('prev').classList.add('hide'); $('again').classList.add('hide');
+  $('shot').classList.remove('hide'); if (stream) $('vid').classList.remove('hide');
+}
+function fromFile(inp) { const f = inp.files[0]; if (f) { photo = f; showPrev(URL.createObjectURL(f)); } }
+
+async function send() {
+  if (!photo) { alert('Prenez une photo avant d’envoyer.'); return; }
+  const body = new FormData();
+  body.append('photo', photo, 'feuille.jpg');
+  body.append('agent_id', $('agent').value.trim());
+  if (geo) {
+    body.append('lat', geo.lat); body.append('lon', geo.lon);
+    if (geo.t != null) { body.append('temp', geo.t); body.append('humidity', geo.h); body.append('rain', geo.r); }
+  }
+  $('res').textContent = 'Envoi en cours…';
+  try {
+    const r = await fetch('/api/observations', { method: 'POST', body });
+    const j = await r.json();
+    if (r.ok) { $('res').textContent = `Photo reçue par la plateforme (fiche n° ${j.observation_id}).`; retake(); }
+    else { $('res').textContent = 'Erreur : ' + (j.detail || r.status); }
+  } catch (e) { $('res').textContent = 'Connexion impossible. Réessayez.'; }
+}
+
+// Surveillance
+function tab(n) {
+  $('s1').classList.toggle('hide', n !== 1);
+  $('s2').classList.toggle('hide', n !== 2);
+  $('b1').className = n === 1 ? 'on' : '';
+  $('b2').className = n === 2 ? 'on' : '';
+  if (n === 2) load();
+}
+async function api(path, opts = {}) {
+  opts.headers = { 'X-Token': $('tok').value.trim(), ...(opts.headers || {}) };
+  const r = await fetch(path, opts);
+  if (!r.ok) throw new Error(r.status === 401 ? 'Jeton superviseur invalide : vérifiez la valeur de SUPERVISOR_TOKEN.' : 'Erreur ' + r.status);
+  return r.json();
+}
+async function load() {
+  try {
+    const [d, n, a, ag] = await Promise.all([api('/api/dashboard'), api('/api/notifications'),
+                                              api('/api/alerts'), api('/api/agents')]);
+    $('tokmsg').textContent = 'Connecté.';
+    $('matrix').innerHTML = `<table><tr><th></th>${SEA.map(s => `<th>${s}</th>`).join('')}</tr>` +
+      d.matrix.map(r => `<tr><td>${r.species}</td>${r.rates.map(v =>
+        `<td class="l${lv(v)}">${v == null ? '—' : v + ' %'}</td>`).join('')}</tr>`).join('') +
+      `</table><p class="muted">${d.total} observations · ${d.touched_pct ?? '—'} % touchés</p>`;
+    $('zones').innerHTML = d.zones.map(z =>
+      `<div class="item"><span>${z.zone}</span><span class="muted">${z.n} observations</span><b>${z.rate ?? '—'} %</b></div>`
+    ).join('') || 'Aucune donnée.';
+    $('notes').innerHTML = n.filter(x => !x.read).map(x =>
+      `<div class="item"><span>${x.message}</span><span>
+        <select id="ag${x.alert_id}" style="width:auto">${ag.map(g => `<option value="${g.id}">${g.name}</option>`).join('')}</select>
+        <button class="sm" onclick="sms(${x.alert_id})">Envoyer SMS</button></span></div>`
+    ).join('') || 'Aucune notification en attente.';
+    $('alerts').innerHTML = a.map(x =>
+      `<div class="item"><span>#${x.id} · ${x.species} · ${x.zone} · ${x.diagnostic}</span>
+       <span class="muted">${x.level} · ${x.status}</span></div>`
+    ).join('') || 'Aucune alerte.';
+  } catch (e) { $('tokmsg').textContent = e.message; }
+}
+async function sms(alertId) {
+  try {
+    await api(`/api/alerts/${alertId}/sms`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ agent_id: $('ag' + alertId).value }) });
+    load();
+  } catch (e) { alert(e.message); }
+}
+startCam();
+</script>
+</body>
+</html>

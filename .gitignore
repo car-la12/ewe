@@ -1,0 +1,4 @@
+.plant/**
+ata/
+__pycache__/
+*.pyc
